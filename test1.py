@@ -1,50 +1,3 @@
-# from PIL import Image, ImageDraw
-# import math
-
-# # Đường dẫn đến file ảnh
-# input_path = r"D:\\SGU\\Opensource_Software\\radio-client\\assets\\wangjunkai.jpg"
-
-# # Đọc ảnh vào đối tượng Image
-# img = Image.open(input_path)
-
-# # Tính kích thước ảnh và bán kính
-# width, height = img.size
-# radius = min(width, height) // 2
-
-# # Tạo ảnh trống để chứa ảnh sau khi xoay
-# new_img = Image.new("RGBA", (radius * 2, radius * 2), (0, 0, 0, 0))
-
-# # Lấy đối tượng vẽ của ảnh mới
-# draw = ImageDraw.Draw(new_img)
-
-# # Vòng lặp để xoay ảnh và vẽ lên ảnh mới
-# angle = 0
-# while True:
-#     # Tạo ảnh mới theo góc độ hiện tại
-#     rotated_img = img.rotate(angle)
-
-#     # Tính toạ độ để vẽ ảnh lên ảnh mới
-#     x = radius - rotated_img.width // 2
-#     y = radius - rotated_img.height // 2
-
-#     # Vẽ ảnh lên ảnh mới
-#     new_img.paste(rotated_img, (x, y), rotated_img)
-
-#     # Vẽ một hình tròn để làm border cho ảnh
-#     draw.ellipse((0, 0, new_img.width, new_img.height),
-#                  outline="white", width=10)
-
-#     # Hiển thị ảnh
-#     new_img.show()
-
-#     # Tăng góc độ lên một lượng nhỏ
-#     angle += 5
-
-#     # Nếu góc độ vượt quá 360 độ thì quay trở lại 0 độ
-#     if angle >= 360:
-#         angle = 0
-
-
 # from tkinter import *
 # from urllib.request import urlopen
 # from PIL import ImageTk, Image
@@ -72,3 +25,38 @@
 # label.pack()
 
 # root.mainloop()
+
+# from playsound import playsound
+
+# # for playing note.wav file
+# playsound('/path/note.wav')
+# print('playing sound using  playsound')
+
+
+# import vlc
+# import os
+# os.add_dll_directory(os.getcwd())
+# p = vlc.MediaPlayer("http://localhost:5000/play-music/1683005873.149153.mp3")
+# p.play()
+
+# import vlc
+# from time import sleep
+# sleep(5)
+# Instance = vlc.Instance('--fullscreen')
+# player = Instance.media_player_new()
+# Media = Instance.media_new(
+#     'http://localhost:5000/play-music/1683005873.149153.mp3')
+# Media.get_mrl()
+# player.set_media(Media)
+# player.play()
+
+# import pygame
+# from pydub import AudioSegment
+# pygame.init()
+# pygame.mixer.init()
+# pygame.mixer.music.load('sample.mp3')
+# audSeg = AudioSegment.from_mp3("sample.mp3")
+# audSeg.export("hello.wav", format="wav")
+
+
+# pygame.event.wait()

@@ -37,28 +37,6 @@
 #         print(e)
 
 
-# class App(tk.Tk):
-#     def __init__(self):
-#         super().__init__()
-
-#         self.imagelab = tk.Label(
-#             self, text="Loading image from internet ...", width=50, height=5)
-#         self.imagelab.pack()
-
-#         self.bind("<<ImageLoaded>>", self.on_image_loaded)
-
-#         # start a thread to fetch the image
-#         url = "https://batman-news.com/wp-content/uploads/2017/11/Justice-League-Superman-Banner.jpg"
-#         threading.Thread(target=getImageFromURL, args=(url, self)).start()
-
-#     def on_image_loaded(self, event):
-#         self.imagelab.config(
-#             image=self.image, width=400, height=400)
-
-
-# App().mainloop()
-
-
 # import pygame
 # import requests
 # from mutagen.mp3 import MP3

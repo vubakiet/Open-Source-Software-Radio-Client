@@ -1,5 +1,14 @@
+
+
+import vlc
+import time
+from mutagen.mp3 import MP3
+from threading import Thread
+import threading
+
 import tkinter as tk
 from tkinter import *
+from tkinter import ttk
 from PIL import Image, ImageTk, ImageOps, ImageDraw
 from pydub import AudioSegment
 from pydub.playback import play
@@ -9,11 +18,8 @@ from modules.Gradian import GradientFrame
 from urllib.request import urlopen
 from io import BytesIO
 from modules.Constants import Constants
-
-import pygame
-from mutagen.mp3 import MP3
-
-os.add_dll_directory(os.getcwd())
+# os.add_dll_directory(os.getcwd())
+os.add_dll_directory(r'C:\Program Files\VideoLAN\VLC')
 
 
 class Music:
@@ -32,51 +38,56 @@ class GUI(tk.Frame):
         self.master.geometry("800x600")
 
         def handle_play_mp3(path):
-            pygame.init()
-            pygame.mixer.init()
-
             url = "http://localhost:5000/play-music/" + str(path)
-
-            response = requests.get(url)
-            file = response.content
-
-            # with open("temp.mp3", "wb") as f:
-            #     f.write(file)
-
-            # pygame.mixer.music.load("temp.mp3")
-            pygame.mixer.music.play()
-            print("hello")
-            while pygame.mixer.music.get_busy():
-                continue
-
-            pygame.mixer.music.stop()
-            pygame.quit()
+            media_player = Constants.media_player
+            media = vlc.Media(url)
+            media_player.set_media(media)
+            media_player.play()
+            # wait so the video can be played for 2.5 seconds
+            # dem = 5
+            # while(dem > 0):
+            #     dem = dem - 1
+            duration = media_player.get_length() / 1000
+            while (duration > 0):
+                duration = duration - 1
+            # checking if it is playing
+            value = media_player.is_playing()
 
         def handle_prev():
             if (Constants.index_select > 0 and Constants.index_select < len(Constants.list_music)):
+                self.seekbar['value'] = 0
+                self.listbox.select_clear(Constants.index_select)
                 Constants.index_select = Constants.index_select - 1
                 Constants.music_selected = Constants.list_music[Constants.index_select]
-                # handle_play_mp3(Constants.music_selected['path'])
+                handle_play_mp3(Constants.music_selected['path'])
+                self.listbox.select_set(Constants.index_select)
 
         def handle_paused():
             if (Constants.index_select >= 0 and Constants.index_select < len(Constants.list_music)):
+                media_player = Constants.media_player
+                # No play
                 if (Constants.isPlay == False):
                     imgPrev = ImageTk.PhotoImage(Image.open(
                         r"D:\\SGU\\Opensource_Software\\radio-client\\assets\\pause.png"))
+                    media_player.play()
                     Constants.isPlay = True
+                # Playing
                 else:
                     imgPrev = ImageTk.PhotoImage(Image.open(
                         r"D:\\SGU\\Opensource_Software\\radio-client\\assets\\play.png"))
+                    media_player.pause()
                     Constants.isPlay = False
                 btnPaused.configure(image=imgPrev)
                 btnPaused.image = imgPrev
-                # pygame.mixer.music.pause()
 
         def handle_next():
             if (Constants.index_select < len(Constants.list_music) - 1 and Constants.index_select > -1):
+                self.seekbar['value'] = 0
+                self.listbox.select_clear(Constants.index_select)
                 Constants.index_select = Constants.index_select + 1
                 Constants.music_selected = Constants.list_music[Constants.index_select]
-                # handle_play_mp3(Constants.music_selected['path'])
+                handle_play_mp3(Constants.music_selected['path'])
+                self.listbox.select_set(Constants.index_select)
 
         def handle_search():
             Constants.list_music.append({"id": 1, "name": "Hôm nay tôi buồn",
@@ -84,12 +95,12 @@ class GUI(tk.Frame):
             self.listbox.insert(END, "Hôm nay tôi buồn")
 
         def onselect(evt):
+            self.seekbar['value'] = 0
             imgPrev = ImageTk.PhotoImage(Image.open(
                 r"D:\\SGU\\Opensource_Software\\radio-client\\assets\\pause.png"))
             Constants.isPlay = True
             btnPaused.configure(image=imgPrev)
             btnPaused.image = imgPrev
-            # pygame.mixer.music.pause()
             # Lấy index của dòng được chọn
             index = self.listbox.curselection()[0]
             # Lấy tên bài hát từ đối tượng Music tương ứng
@@ -109,9 +120,8 @@ class GUI(tk.Frame):
             #     r"D:\\SGU\\Opensource_Software\\radio-client\\assets\\pause.png"))
             # btnPaused.configure(image=imgPrev)
             # btnPaused.image = imgPrev
-            pygame.init()
-            pygame.mixer.init()
             handle_play_mp3(str(path))
+            play_time()
 
         def choose_image(add_song_win):
             mp3file = tk.filedialog.askopenfilename(
@@ -127,9 +137,7 @@ class GUI(tk.Frame):
             # print(os.path.abspath(file_to_upload.filename))
 
             file = {'file': open(dir, 'rb')}
-            data = {"name": "name test", "path": "path"}
-            print(file)
-            print("hello")
+            data = {"name": "name test", "image": "image test"}
             # headers = {'Content-Type': 'multipart/form-data'}
             # r = requests.post("http://127.0.0.1:5000/uploads",
             #                   headers=headers, files=file)
@@ -175,6 +183,17 @@ class GUI(tk.Frame):
             bt_select_file.grid(row=2, column=3)
             btn_them.grid(row=3, column=0)
             btn_huy.grid(row=3, column=1)
+
+        def play_time():
+
+            media_player = Constants.media_player
+            current_time = int(media_player.get_length() / 1000)
+            # convert_current_time = time.strftime(
+            #     '%H:%M:%S', time.gmtime(curren_time))
+            self.seekbar1.config(text=str(current_time))
+            if (media_player.is_playing() == 1):
+                self.seekbar['value'] += float(100/current_time)
+            self.seekbar1.after(1000, play_time)
 
         # Frame left
         self.frameL = GradientFrame(self.master, width=500,
@@ -224,6 +243,35 @@ class GUI(tk.Frame):
 
         lbImage.pack(padx=50, pady=50, side="top")
 
+        # progress = ttk.Progressbar(
+        #     self.frameL, orient=HORIZONTAL, length=300, mode='determinate')
+        # progress.pack()
+        def on_seekbar_click(event):
+            # Lấy vị trí của con trỏ chuột trên thanh kéo thời gian
+            # position = seekbar.get()
+            # print(position)
+            # media_player = Constants.media_player
+            # duration = media_player.get_length() / 1000
+            # # Thời gian chạy 1s sẽ load bao nhiêu % trên seekbar
+            # print(str(300/duration))
+            print("heloo")
+        # progress['value'] =
+        # seekbar = tk.Scale(self.frameL, length=300, from_=0, to=100,
+        #                    orient=tk.HORIZONTAL)
+        # seekbar.bind('<Button-1>', on_seekbar_click)
+        # # seekbar['value'] = 20
+        # seekbar.pack()
+        self.seekbar1 = tk.Label(self.frameL, text='', relief=GROOVE, anchor=E)
+        self.seekbar1.pack(fill=X, side=BOTTOM, ipady=2)
+
+        def slide(x):
+            pass
+
+        self.seekbar = ttk.Scale(
+            self.frameL, from_=0, to=100, orient=HORIZONTAL, value=0, command=slide, length=300)
+        self.seekbar.pack()
+        self.seekbar.bind('<Button-1>', on_seekbar_click)
+
         # lbImage = GradientFrame(self.master, width=300,
         #                         height=600,
         #                         image=img,
@@ -233,23 +281,23 @@ class GUI(tk.Frame):
         imgPrev = ImageTk.PhotoImage(Image.open(
             r"D:\\SGU\\Opensource_Software\\radio-client\\assets\\back-arrow.png"))
         btnPrev = tk.Button(self.frameL, image=imgPrev,
-                            width=35, height=35, bg='#192533', border=0, command=handle_prev)
+                            width=35, height=35, border=0, command=handle_prev)
         btnPrev.image = imgPrev
-        btnPrev.place(x=90, y=420, width=35, height=35)
+        btnPrev.place(x=90, y=480, width=35, height=35)
 
         imgPaused = ImageTk.PhotoImage(Image.open(
             r"D:\\SGU\\Opensource_Software\\radio-client\\assets\\play.png"))
         btnPaused = tk.Button(
             self.frameL, image=imgPaused, width=35, height=35, command=handle_paused)
         btnPaused.image = imgPaused
-        btnPaused.place(x=185, y=420, width=35, height=35)
+        btnPaused.place(x=185, y=480, width=35, height=35)
 
         imgNext = ImageTk.PhotoImage(Image.open(
             r"D:\\SGU\\Opensource_Software\\radio-client\\assets\\next.png"))
         btnNext = tk.Button(self.frameL, image=imgNext,
                             width=35, height=35, command=handle_next)
         btnNext.image = imgNext
-        btnNext.place(x=280, y=420, width=35, height=35)
+        btnNext.place(x=280, y=480, width=35, height=35)
 
         # List in frame Right
         self.entry_search = tk.Entry(self.frameR, bg="white", width=35)
