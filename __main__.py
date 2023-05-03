@@ -8,6 +8,7 @@ import os
 import requests
 from modules.Gradian import GradientFrame
 from modules.Constants import Constants
+from urllib.request import urlopen
 os.add_dll_directory(os.getcwd())
 
 
@@ -50,6 +51,22 @@ class GUI(tk.Frame):
                 Constants.music_selected = Constants.list_music[Constants.index_select]
                 handle_play_mp3(Constants.music_selected['path'])
                 self.listbox.select_set(Constants.index_select)
+                if (Constants.music_selected['image'] == ""):
+                    img = ImageTk.PhotoImage(Image.open(
+                        r"output.png"))
+                    lbImage.configure(image=img)
+                    lbImage.image = img
+                else:
+                    URL = "http://127.0.0.1:5000/photo/" + \
+                        str(Constants.music_selected['image'])
+                    u = urlopen(URL)
+                    raw_data = u.read()
+                    u.close()
+                    img = ImageTk.PhotoImage(data=raw_data)
+                lbImage.configure(image=img)
+                lbImage.image = img
+                lb_music_name.configure(text=Constants.music_selected['name'])
+                lb_music_name.pack()
 
         def handle_paused():
             if (Constants.index_select >= 0 and Constants.index_select < len(Constants.list_music)):
@@ -77,6 +94,22 @@ class GUI(tk.Frame):
                 Constants.music_selected = Constants.list_music[Constants.index_select]
                 handle_play_mp3(Constants.music_selected['path'])
                 self.listbox.select_set(Constants.index_select)
+                if (Constants.music_selected['image'] == ""):
+                    img = ImageTk.PhotoImage(Image.open(
+                        r"output.png"))
+                    lbImage.configure(image=img)
+                    lbImage.image = img
+                else:
+                    URL = "http://127.0.0.1:5000/photo/" + \
+                        str(Constants.music_selected['image'])
+                    u = urlopen(URL)
+                    raw_data = u.read()
+                    u.close()
+                    img = ImageTk.PhotoImage(data=raw_data)
+                lbImage.configure(image=img)
+                lbImage.image = img
+                lb_music_name.configure(text=Constants.music_selected['name'])
+                lb_music_name.pack()
 
         def handle_search():
             Constants.list_music.append({"id": 1, "name": "Hôm nay tôi buồn",
@@ -97,8 +130,46 @@ class GUI(tk.Frame):
              path) = selected_music['id'], selected_music['image'], selected_music['name'], selected_music['path']
             Constants.index_select = index
             Constants.music_selected = selected_music
+            lb_music_name.configure(text=name)
+            lb_music_name.pack()
             if (Constants.solve != None):
                 self.seekbar1.after_cancel(Constants.solve)
+            if (image == ""):
+                img = ImageTk.PhotoImage(Image.open(
+                    r"output.png"))
+                lbImage.configure(image=img)
+                lbImage.image = img
+            else:
+                URL = "http://127.0.0.1:5000/photo/" + str(image)
+                u = urlopen(URL)
+                raw_data = u.read()
+                u.close()
+                img = ImageTk.PhotoImage(data=raw_data)
+                # # Lấy kích thước của ảnh
+                # width, height = 300, 300
+
+                # # Tính đường kính của hình tròn cần cắt ra
+                # diameter = min(width, height)
+
+                # # Tạo ảnh mới kích thước bằng đường kính của hình tròn
+                # new_img = Image.new("RGBA", (diameter, diameter), (0, 0, 0, 0))
+
+                # # Chèn ảnh gốc vào ảnh mới
+                # new_img.paste(img, ((diameter - width) //
+                #               2, (diameter - height) // 2))
+
+                # # Bo tròn ảnh mới
+                # mask = Image.new("L", (diameter, diameter), 0)
+                # draw = ImageDraw.Draw(mask)
+                # draw.ellipse((0, 0, diameter, diameter), fill=500)
+                # new_img.putalpha(mask)
+
+                # # Lưu ảnh mới
+                # output_path = "test.png"
+                # new_img.save(output_path)
+
+                lbImage.configure(image=img)
+                lbImage.image = img
 
             # print(selected_music['path'])
             # Hiển thị tên bài hát lên Label
@@ -174,6 +245,20 @@ class GUI(tk.Frame):
             btn_them.grid(row=3, column=0)
             btn_huy.grid(row=3, column=1)
 
+        def handle_delete_music():
+            index = len(self.listbox.curselection())
+            if (index != 0):
+                # Lấy index của dòng được chọn
+                index = self.listbox.curselection()[0]
+                # Lấy tên bài hát từ đối tượng Music tương ứng
+                selected_music = Constants.list_music[index]
+                (id, image, name,
+                 path) = selected_music['id'], selected_music['image'], selected_music['name'], selected_music['path']
+                requests.get("http://127.0.0.1:5000/delete-music/"+str(id))
+                self.listbox.delete(index)
+                Constants.index_select = -1
+                Constants.isPlay = False
+
         def play_time():
             media_player = Constants.media_player
             if (media_player.is_playing() == 1):
@@ -204,12 +289,16 @@ class GUI(tk.Frame):
         # Label on top of frame Left
 
         img = ImageTk.PhotoImage(Image.open(
-            r"assets\\output.png"))
+            r"output.png"))
 
         lbImage = tk.Label(self.frameL, image=img,
                            width=300, height=300, bg='#192533')
         lbImage.image = img
         lbImage.pack(padx=50, pady=50, side="top")
+
+        lb_music_name = tk.Label(self.frameL)
+        # lb_music_name.pack()
+        # lb_music_name.pack_forget()
 
         def on_seekbar_click(event):
             self.seekbar['value'] = event.x / 3
@@ -253,27 +342,30 @@ class GUI(tk.Frame):
         btnNext.place(x=280, y=480, width=35, height=35)
 
         # List in frame Right
-        self.entry_search = tk.Entry(self.frameR, bg="white", width=35)
-        self.entry_search.grid(row=0, column=0, padx=20, pady=45)
-        text = self.entry_search.get()
-        self.btnSearch = tk.Button(
-            self.frameR, text="Search", command=handle_search)
-        self.btnSearch.grid(row=0, column=1, pady=45)
+        # self.entry_search = tk.Entry(self.frameR, bg="white", width=35)
+        # self.entry_search.grid(row=0, column=0, padx=20, pady=45)
+        # text = self.entry_search.get()
+        # self.btnSearch = tk.Button(
+        #     self.frameR, text="Search", command=handle_search)
+        # self.btnSearch.grid(row=0, column=1, pady=45)
 
-        self.listbox = tk.Listbox(self.frameR, width=50, height=20)
-        self.listbox.grid(row=1, column=0, columnspan=2, padx=40, pady=10)
-        Constants.list_music = requests.get(
-            "http://127.0.0.1:5000/get-all-music").json()
+        self.listbox = tk.Listbox(self.frameR, width=50, height=25)
+        self.listbox.grid(row=0, column=0, columnspan=3, padx=40, pady=50)
+        res = requests.get(
+            "http://127.0.0.1:5000/get-all-music")
+        if (str(res.content).find("Empty", 0, len(str(res.content))) == -1):
+            Constants.list_music = res.json()
+
         for music in Constants.list_music:
             self.listbox.insert(END, music['name'])
         self.listbox.bind('<<ListboxSelect>>', onselect)
 
         self.btnAdd = tk.Button(self.frameR, text="Add Music",
                                 width=10, height=2, command=handle_add_music)
-        self.btnAdd.grid(row=5, column=1, pady=45)
-        # self.btnDelete = tk.Button(
-        #     self.frameR, text="Delete Music", width=10, height=2)
-        # self.btnDelete.grid(row=5, column=2, pady=10)
+        self.btnAdd.grid(row=1, column=1)
+        self.btnDelete = tk.Button(
+            self.frameR, text="Delete Music", width=10, height=2, command=handle_delete_music)
+        self.btnDelete.grid(row=1, column=2)
 
 
 if __name__ == "__main__":

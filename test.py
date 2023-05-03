@@ -69,7 +69,7 @@
 from PIL import Image, ImageOps
 from PIL import Image, ImageDraw
 
-input_path = r"D:\\SGU\\Opensource_Software\\radio-client\\assets\\wangjunkai.jpg"
+input_path = r"D:\\SGU\\Opensource_Software\\radio-client\\assets\\zing-mp3.png"
 
 # Đọc ảnh vào đối tượng Image
 img = Image.open(input_path)
@@ -89,7 +89,7 @@ new_img.paste(img, ((diameter - width) // 2, (diameter - height) // 2))
 # Bo tròn ảnh mới
 mask = Image.new("L", (diameter, diameter), 0)
 draw = ImageDraw.Draw(mask)
-draw.ellipse((0, 0, diameter, diameter), fill=255)
+draw.ellipse((0, 0, diameter, diameter), fill=500)
 new_img.putalpha(mask)
 
 # Lưu ảnh mới
