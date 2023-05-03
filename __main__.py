@@ -210,13 +210,18 @@ class GUI(tk.Frame):
         # progress.pack()
         def on_seekbar_click(event):
             # Lấy vị trí của con trỏ chuột trên thanh kéo thời gian
-            # position = seekbar.get()
+            position = self.seekbar.get()
             # print(position)
+            media_player = Constants.media_player
+            time = ((media_player.get_length() / 1000) / 100) * position
+            print("position: " + str(position))
+            print("length: " + str(time))
+            media_player.set_time(int(time * 1000))
+
             # media_player = Constants.media_player
             # duration = media_player.get_length() / 1000
             # # Thời gian chạy 1s sẽ load bao nhiêu % trên seekbar
             # print(str(300/duration))
-            print("heloo")
         # progress['value'] =
         # seekbar = tk.Scale(self.frameL, length=300, from_=0, to=100,
         #                    orient=tk.HORIZONTAL)
