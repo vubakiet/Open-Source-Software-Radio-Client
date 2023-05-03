@@ -8,3 +8,4 @@ class Constants:
     isPlay = False
     pause = None
     media_player = vlc.MediaPlayer()
+    solve = None

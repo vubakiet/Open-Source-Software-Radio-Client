@@ -87,7 +87,6 @@ class GUI(tk.Frame):
             self.seekbar['value'] = 0
             imgPrev = ImageTk.PhotoImage(Image.open(
                 r"assets\\pause.png"))
-            Constants.isPlay = True
             btnPaused.configure(image=imgPrev)
             btnPaused.image = imgPrev
             # Lấy index của dòng được chọn
@@ -98,6 +97,8 @@ class GUI(tk.Frame):
              path) = selected_music['id'], selected_music['image'], selected_music['name'], selected_music['path']
             Constants.index_select = index
             Constants.music_selected = selected_music
+            if (Constants.solve != None):
+                self.seekbar1.after_cancel(Constants.solve)
 
             # print(selected_music['path'])
             # Hiển thị tên bài hát lên Label
@@ -175,19 +176,21 @@ class GUI(tk.Frame):
 
         def play_time():
             media_player = Constants.media_player
-            current_time = int(media_player.get_length() / 1000)
-            current_length = float(media_player.get_length() / 1000)
-            convert_current_time = time.strftime(
-                '%H:%M:%S', time.gmtime(float(media_player.get_time() / 1000)))
-            convert_current_length = time.strftime(
-                '%H:%M:%S', time.gmtime(current_length))
-            self.seekbar1.config(
-                text=str(convert_current_time) + "/" + str(convert_current_length))
             if (media_player.is_playing() == 1):
-                self.seekbar['value'] += float(100/current_time)
-            self.seekbar1.after(1000, play_time)
+                Constants.isPlay = True
+                current_time = int(media_player.get_length() / 1000)
+                current_length = float(media_player.get_length() / 1000)
+                convert_current_time = time.strftime(
+                    '%H:%M:%S', time.gmtime(float(media_player.get_time() / 1000)))
+                convert_current_length = time.strftime(
+                    '%H:%M:%S', time.gmtime(current_length))
+                self.seekbar1.config(
+                    text=str(convert_current_time) + "/" + str(convert_current_length))
 
-        # Frame left
+                self.seekbar['value'] += float(100/current_time)
+            Constants.solve = self.seekbar1.after(1000, play_time)
+
+            # Frame left
         self.frameL = GradientFrame(self.master, width=500,
                                     height=600, borderwidth=1, relief="sunken")
         self.frameL.pack(side="left", fill="y")
