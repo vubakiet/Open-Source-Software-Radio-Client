@@ -212,12 +212,13 @@ class GUI(tk.Frame):
         lbImage.pack(padx=50, pady=50, side="top")
 
         def on_seekbar_click(event):
+            self.seekbar['value'] = event.x / 3
             # get position on seekbar tool
             position = self.seekbar.get()
-            # print(position)
             media_player = Constants.media_player
             time = ((media_player.get_length() / 1000) / 100) * position
             media_player.set_time(int(time * 1000))
+
         self.seekbar1 = tk.Label(self.frameL, text='', relief=GROOVE, anchor=E)
         self.seekbar1.pack(fill=X, side=BOTTOM, ipady=2)
 
