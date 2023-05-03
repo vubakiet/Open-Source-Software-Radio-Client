@@ -110,6 +110,29 @@ class GUI(tk.Frame):
                 lbImage.image = img
                 lb_music_name.configure(text=Constants.music_selected['name'])
                 lb_music_name.pack()
+            elif(Constants.index_select == len(Constants.list_music) - 1):
+                self.seekbar['value'] = 0
+                self.listbox.select_clear(Constants.index_select)
+                Constants.index_select = 0
+                Constants.music_selected = Constants.list_music[Constants.index_select]
+                handle_play_mp3(Constants.music_selected['path'])
+                self.listbox.select_set(Constants.index_select)
+                if (Constants.music_selected['image'] == ""):
+                    img = ImageTk.PhotoImage(Image.open(
+                        r"output.png"))
+                    lbImage.configure(image=img)
+                    lbImage.image = img
+                else:
+                    URL = "http://127.0.0.1:5000/photo/" + \
+                        str(Constants.music_selected['image'])
+                    u = urlopen(URL)
+                    raw_data = u.read()
+                    u.close()
+                    img = ImageTk.PhotoImage(data=raw_data)
+                lbImage.configure(image=img)
+                lbImage.image = img
+                lb_music_name.configure(text=Constants.music_selected['name'])
+                lb_music_name.pack()
 
         def handle_search():
             Constants.list_music.append({"id": 1, "name": "Hôm nay tôi buồn",
