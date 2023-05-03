@@ -174,12 +174,15 @@ class GUI(tk.Frame):
             btn_huy.grid(row=3, column=1)
 
         def play_time():
-
             media_player = Constants.media_player
             current_time = int(media_player.get_length() / 1000)
-            # convert_current_time = time.strftime(
-            #     '%H:%M:%S', time.gmtime(curren_time))
-            self.seekbar1.config(text=str(current_time))
+            current_length = float(media_player.get_length() / 1000)
+            convert_current_time = time.strftime(
+                '%H:%M:%S', time.gmtime(float(media_player.get_time() / 1000)))
+            convert_current_length = time.strftime(
+                '%H:%M:%S', time.gmtime(current_length))
+            self.seekbar1.config(
+                text=str(convert_current_time) + "/" + str(convert_current_length))
             if (media_player.is_playing() == 1):
                 self.seekbar['value'] += float(100/current_time)
             self.seekbar1.after(1000, play_time)
@@ -205,29 +208,13 @@ class GUI(tk.Frame):
         lbImage.image = img
         lbImage.pack(padx=50, pady=50, side="top")
 
-        # progress = ttk.Progressbar(
-        #     self.frameL, orient=HORIZONTAL, length=300, mode='determinate')
-        # progress.pack()
         def on_seekbar_click(event):
-            # Lấy vị trí của con trỏ chuột trên thanh kéo thời gian
+            # get position on seekbar tool
             position = self.seekbar.get()
             # print(position)
             media_player = Constants.media_player
             time = ((media_player.get_length() / 1000) / 100) * position
-            print("position: " + str(position))
-            print("length: " + str(time))
             media_player.set_time(int(time * 1000))
-
-            # media_player = Constants.media_player
-            # duration = media_player.get_length() / 1000
-            # # Thời gian chạy 1s sẽ load bao nhiêu % trên seekbar
-            # print(str(300/duration))
-        # progress['value'] =
-        # seekbar = tk.Scale(self.frameL, length=300, from_=0, to=100,
-        #                    orient=tk.HORIZONTAL)
-        # seekbar.bind('<Button-1>', on_seekbar_click)
-        # # seekbar['value'] = 20
-        # seekbar.pack()
         self.seekbar1 = tk.Label(self.frameL, text='', relief=GROOVE, anchor=E)
         self.seekbar1.pack(fill=X, side=BOTTOM, ipady=2)
 
