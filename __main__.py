@@ -1,25 +1,14 @@
-
-
 import vlc
 import time
-from mutagen.mp3 import MP3
-from threading import Thread
-import threading
-
 import tkinter as tk
 from tkinter import *
 from tkinter import ttk
 from PIL import Image, ImageTk, ImageOps, ImageDraw
-from pydub import AudioSegment
-from pydub.playback import play
 import os
 import requests
 from modules.Gradian import GradientFrame
-from urllib.request import urlopen
-from io import BytesIO
 from modules.Constants import Constants
-# os.add_dll_directory(os.getcwd())
-os.add_dll_directory(r'C:\Program Files\VideoLAN\VLC')
+os.add_dll_directory(os.getcwd())
 
 
 class Music:
@@ -68,13 +57,13 @@ class GUI(tk.Frame):
                 # No play
                 if (Constants.isPlay == False):
                     imgPrev = ImageTk.PhotoImage(Image.open(
-                        r"D:\\SGU\\Opensource_Software\\radio-client\\assets\\pause.png"))
+                        r"assets\\pause.png"))
                     media_player.play()
                     Constants.isPlay = True
                 # Playing
                 else:
                     imgPrev = ImageTk.PhotoImage(Image.open(
-                        r"D:\\SGU\\Opensource_Software\\radio-client\\assets\\play.png"))
+                        r"assets\\play.png"))
                     media_player.pause()
                     Constants.isPlay = False
                 btnPaused.configure(image=imgPrev)
@@ -97,7 +86,7 @@ class GUI(tk.Frame):
         def onselect(evt):
             self.seekbar['value'] = 0
             imgPrev = ImageTk.PhotoImage(Image.open(
-                r"D:\\SGU\\Opensource_Software\\radio-client\\assets\\pause.png"))
+                r"assets\\pause.png"))
             Constants.isPlay = True
             btnPaused.configure(image=imgPrev)
             btnPaused.image = imgPrev
@@ -209,38 +198,11 @@ class GUI(tk.Frame):
         # Label on top of frame Left
 
         img = ImageTk.PhotoImage(Image.open(
-            r"D:\\SGU\\Opensource_Software\\radio-client\\assets\\output.png"))
+            r"assets\\output.png"))
 
         lbImage = tk.Label(self.frameL, image=img,
                            width=300, height=300, bg='#192533')
         lbImage.image = img
-        # url = "https://scontent.fsgn8-3.fna.fbcdn.net/v/t1.6435-9/110317078_108873884247194_8632694263271216467_n.jpg?_nc_cat=100&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=CYkmKjjJ3K8AX8Z-gb1&_nc_ht=scontent.fsgn8-3.fna&oh=00_AfD_bZk2d07vAhFPpfwLsst7J0AXCpZnB8e56o2Qe_QHIA&oe=6476F918"
-        # image_bytes = urlopen(url).read()
-
-        # image = Image.open(BytesIO(image_bytes))
-        # img_width, img_height = image.size
-
-        # # Tính đường kính của hình tròn
-        # diameter = min(img_width, img_height)
-
-        # # Tạo mask hình tròn
-        # mask = Image.new('L', (diameter, diameter), 0)
-        # draw = ImageDraw.Draw(mask)
-        # draw.ellipse((0, 0, diameter, diameter), fill=255)
-
-        # # Crop hình ảnh bằng mask hình tròn
-        # img = ImageOps.fit(image, mask.size, centering=(0.5, 0.5))
-        # img.putalpha(mask)
-
-        # # Resize hình ảnh
-        # img = img.resize((300, 300), Image.ANTIALIAS)
-
-        # photo = ImageTk.PhotoImage(img)
-
-        # lbImage = tk.Label(self.frameL, image=photo, bg='#192533')
-        # lbImage.image = photo
-        # lbImage.pack()
-
         lbImage.pack(padx=50, pady=50, side="top")
 
         # progress = ttk.Progressbar(
@@ -272,28 +234,23 @@ class GUI(tk.Frame):
         self.seekbar.pack()
         self.seekbar.bind('<Button-1>', on_seekbar_click)
 
-        # lbImage = GradientFrame(self.master, width=300,
-        #                         height=600,
-        #                         image=img,
-        #                         borderwidth=1, relief="sunken")
-
         # Tạo các button nằm ở hàng dưới cùng của frame 1
         imgPrev = ImageTk.PhotoImage(Image.open(
-            r"D:\\SGU\\Opensource_Software\\radio-client\\assets\\back-arrow.png"))
+            r"assets\\back-arrow.png"))
         btnPrev = tk.Button(self.frameL, image=imgPrev,
                             width=35, height=35, border=0, command=handle_prev)
         btnPrev.image = imgPrev
         btnPrev.place(x=90, y=480, width=35, height=35)
 
         imgPaused = ImageTk.PhotoImage(Image.open(
-            r"D:\\SGU\\Opensource_Software\\radio-client\\assets\\play.png"))
+            r"assets\\play.png"))
         btnPaused = tk.Button(
             self.frameL, image=imgPaused, width=35, height=35, command=handle_paused)
         btnPaused.image = imgPaused
         btnPaused.place(x=185, y=480, width=35, height=35)
 
         imgNext = ImageTk.PhotoImage(Image.open(
-            r"D:\\SGU\\Opensource_Software\\radio-client\\assets\\next.png"))
+            r"assets\\next.png"))
         btnNext = tk.Button(self.frameL, image=imgNext,
                             width=35, height=35, command=handle_next)
         btnNext.image = imgNext
@@ -329,33 +286,3 @@ if __name__ == "__main__":
     # root.wm_attributes('-topmost', True)
     # root.wm_attributes('-transparentcolor', '#192533')
     gui.mainloop()
-
-# pygame.init()
-    # pygame.mixer.init()
-
-    # # Đặt đường dẫn đến tệp âm thanh mp3
-    # mp3_file = "http://localhost:5000/play-music"
-
-    # # Tạo một đối tượng âm thanh từ tệp mp3
-    # sound = pygame.mixer.Sound(mp3_file)
-
-    # # Phát âm thanh
-    # sound.play()
-
-    # # Chờ cho đến khi âm thanh kết thúc
-    # while pygame.mixer.get_busy():
-    #     pygame.time.wait(100)
-
-    # # Tắt pygame
-    # pygame.quit()
-
-    # Đặt đường dẫn đến file mp3
-
-    # mp3file = urllib3.urlopen("http://localhost:5000/play-music")
-    # with open('./test.mp3', 'wb') as output:
-    #     output.write(mp3file.read())
-
-    # song = AudioSegment.from_mp3("./test.mp3")
-    # play(song)
-    # response = requests.get("http://127.0.0.1:5000/get-all-music")
-    # print(response.content)
