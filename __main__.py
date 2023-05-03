@@ -256,8 +256,20 @@ class GUI(tk.Frame):
                  path) = selected_music['id'], selected_music['image'], selected_music['name'], selected_music['path']
                 requests.get("http://127.0.0.1:5000/delete-music/"+str(id))
                 self.listbox.delete(index)
+                Constants.list_music.pop(index)
                 Constants.index_select = -1
                 Constants.isPlay = False
+                Constants.music_selected = {}
+                Constants.media_player.stop()
+                img = ImageTk.PhotoImage(Image.open(
+                    r"output.png"))
+                lbImage.configure(image=img)
+                lbImage.image = img
+                lb_music_name.pack_forget()
+                imgPause = ImageTk.PhotoImage(Image.open(
+                    r"assets\\play.png"))
+                btnPaused.configure(image=imgPause)
+                btnPaused.image = imgPause
 
         def play_time():
             media_player = Constants.media_player
