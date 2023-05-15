@@ -9,7 +9,7 @@ import requests
 from modules.Gradian import GradientFrame
 from modules.Constants import Constants
 from urllib.request import urlopen
-os.add_dll_directory(os.getcwd())
+# os.add_dll_directory(os.getcwd())
 
 
 class Music:
@@ -74,13 +74,13 @@ class GUI(tk.Frame):
                 # No play
                 if (Constants.isPlay == False):
                     imgPrev = ImageTk.PhotoImage(Image.open(
-                        r"assets\\pause.png"))
+                        r"assets/pause.png"))
                     media_player.play()
                     Constants.isPlay = True
                 # Playing
                 else:
                     imgPrev = ImageTk.PhotoImage(Image.open(
-                        r"assets\\play.png"))
+                        r"assets/play.png"))
                     media_player.pause()
                     Constants.isPlay = False
                 btnPaused.configure(image=imgPrev)
@@ -142,7 +142,7 @@ class GUI(tk.Frame):
         def onselect(evt):
             self.seekbar['value'] = 0
             imgPrev = ImageTk.PhotoImage(Image.open(
-                r"assets\\pause.png"))
+                r"assets/pause.png"))
             btnPaused.configure(image=imgPrev)
             btnPaused.image = imgPrev
             # Lấy index của dòng được chọn
@@ -290,7 +290,7 @@ class GUI(tk.Frame):
                 lbImage.image = img
                 lb_music_name.pack_forget()
                 imgPause = ImageTk.PhotoImage(Image.open(
-                    r"assets\\play.png"))
+                    r"assets/play.png"))
                 btnPaused.configure(image=imgPause)
                 btnPaused.image = imgPause
 
@@ -356,21 +356,21 @@ class GUI(tk.Frame):
 
         # Tạo các button nằm ở hàng dưới cùng của frame 1
         imgPrev = ImageTk.PhotoImage(Image.open(
-            r"assets\\back-arrow.png"))
+            r"assets/back-arrow.png"))
         btnPrev = tk.Button(self.frameL, image=imgPrev,
                             width=35, height=35, border=0, command=handle_prev)
         btnPrev.image = imgPrev
         btnPrev.place(x=90, y=480, width=35, height=35)
 
         imgPaused = ImageTk.PhotoImage(Image.open(
-            r"assets\\play.png"))
+            r"assets/play.png"))
         btnPaused = tk.Button(
             self.frameL, image=imgPaused, width=35, height=35, command=handle_paused)
         btnPaused.image = imgPaused
         btnPaused.place(x=185, y=480, width=35, height=35)
 
         imgNext = ImageTk.PhotoImage(Image.open(
-            r"assets\\next.png"))
+            r"assets/next.png"))
         btnNext = tk.Button(self.frameL, image=imgNext,
                             width=35, height=35, command=handle_next)
         btnNext.image = imgNext
